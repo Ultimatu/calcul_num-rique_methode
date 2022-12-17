@@ -1,19 +1,53 @@
 import time 
 from math import exp, log
+import numpy as np
 
 
 class Math_tools:
-    """Class contenant des fonctions de resolution de methode mathematique."""
+
+    """Class contenant des fonctions de resolution de methode mathematique.\n
+    Notice : Le module `numpy est requis pour l'utilisation de la fonction de lagrange`.
+    si son importation affiche une erreur, veuillez l'installer 
+    par la ligne de commande suivante si vous avez la  connexion internet : ==> `pip  install numpy`. \n
+    si vous n'avez pas la connexion internet pour l'installer,
+    supprimer la ligne d'importation de numpy et supprimer 
+    également la fonction d'interpolation de lagrange pour  eviter une quelconque erreur
+    """
 
     def pause(self, s) -> 1:
-        """Joue le rôle de decorateur."""
+        """Joue le rôle de decorateur. Un decorateur apporte  du style au script"""
 
         return time.sleep(s)
 
+
+    def interpolation_Lagrange(self, x,y) -> list:
+        """Retourne la function d'interpolation de passant par les points d'abscisses x et d'ordonnés f(x).
+        Attributs: { 
+        >>> x = [x0, x1, x2,  xn-1]   ======>     tableau contentant l'ensemble des points d'abscisses;\n
+        >>> y = [f(x0), f(x1), f(x2), f(xn-1)] => tableau contenant l'ensemble des images f(x); \n
+           ____NB: il doit avoir le même nombre d'abscisse x, que d'images f(x)                        }\n
+        Methode d'utilisation. \n
+        >>> x = [4, 6, 8, 9] \n
+        >>> y = [2, 6, 10, 19] \n
+        >>> print(interpolation_lagrange(x, y))
+        """
+
+        M = len(x) 
+        p = np.poly1d(0.0)  #np.poly1d(0.0) convertis p en une variable mathématique.
+        for j in range(M):
+            pt = np.poly1d(y[j])
+            for k in range(M):
+                if k == j:
+                    continue
+                fac = x[j]-x[k]
+                pt *= np.poly1d([1.0, -x[k]])/fac
+            p += pt
+        return f"\n\n\n {p}\nTask  found  {self.interpolation_Lagrange.__name__} done successfully✅✅✅\n"
+        
     def method_trapeze(self, f, a, b, n):
         """
         Retourn l'integrale de la fonction par la methode de trapezes par n subdivision.
-        Attributs: f = fonction, a, b = interval [a, b], n = nombre d'itteration. 
+        Attributs: `f = fonction; a, b = intervalle [a, b]; n = nombre d'itteration`. 
         """
         self.pause(0.5)
         i, h, som = 0, (b-a)/n, 0
@@ -129,7 +163,7 @@ class Math_tools:
     def newton(self, f, d, x0, eps):
         """
         Fonction qui permet de determiné la racine de l'équation f(x)=0 par la methode de newton
-        Attributs: f = fonction - d = derivé de la fonction - x0 = la valeur x0 initial donnée - eps = l'erreur
+        Attributs: `f = fonction - d = derivé de la fonction - x0 = la valeur x0 initial donnée - eps = l'erreur`
         """
         self.pause(1)
         xm = x0 - (f(x0)/d(x0))
@@ -147,9 +181,12 @@ class Math_tools:
 
 
 
-
 #Essaie des differentes fonction.
+
 test = Math_tools()
+abscisse = [0, 2, 3]
+images = [2, 3, 5]
+print("Interpolation de Lagrange  =>",test.interpolation_Lagrange(abscisse, images))
 print("Methode Trapeze            =>",test.method_trapeze(lambda x: x*log(x), 1, 2, 3))
 print("Methode rectangle à gauche =>",test.methode_rectangle_gauche(lambda x: x*log(x), 1, 2, 3))
 print("Methode rectangle à droite =>",test.method_rectangle_droite(lambda x: x*log(x), 1, 2, 30))
